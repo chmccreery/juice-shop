@@ -1,0 +1,25 @@
+name: Semgrep
+on:
+  pull_request: {}
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - .github/workflows/semgrep.yml
+  schedule:
+    - cron: '0 0 * * 0'
+  workflow_dispatch: {}
+jobs:
+  semgrep:
+    name: Scan
+    runs-on: ubuntu-20.04
+    env:
+      SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_HACKATHON_TOKEN }}
+      SEMGREP_APP_URL: "https://hackfindings.dev.semgrep.dev"
+    container:
+      image: returntocorp/semgrep
+    steps:
+      - uses: actions/checkout@v3
+      - name: Scan and suppress internal errors
+        run: semgrep ci
